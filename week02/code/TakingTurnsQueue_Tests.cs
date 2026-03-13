@@ -11,7 +11,10 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: When the tests were first executed, the queue did not correctly
+    // reinsert players who still had turns remaining. The logic in GetNextPerson did
+    // not properly decrement turns and re-add the player to the queue when appropriate.
+    // After correcting the queue logic, players cycle correctly until their turns run out.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -43,7 +46,11 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3)
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
-    // Defect(s) Found: 
+    // Defect(s) Found: Initially the queue logic did not properly maintain correct
+    // order when a new player was added during execution. The queue must maintain
+    // FIFO order and place new players at the back of the queue. After fixing the
+    // implementation, newly added players are inserted at the back and the sequence
+    // of turns matches the expected results.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -85,7 +92,11 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The original implementation did not correctly handle
+    // players with infinite turns (turns equal to 0). According to the requirements,
+    // a turns value of 0 should represent infinite turns and the player should always
+    // be reinserted into the queue. After correcting the logic, the player with zero
+    // turns remains in the queue indefinitely.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -107,7 +118,6 @@ public class TakingTurnsQueueTests
             Assert.AreEqual(expectedResult[i].Name, person.Name);
         }
 
-        // Verify that the people with infinite turns really do have infinite turns.
         var infinitePerson = players.GetNextPerson();
         Assert.AreEqual(timTurns, infinitePerson.Turns, "People with infinite turns should not have their turns parameter modified to a very big number. A very big number is not infinite.");
     }
@@ -116,7 +126,10 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The initial implementation did not properly treat negative
+    // turn values as infinite turns. According to the requirements, any turns value
+    // less than or equal to zero represents infinite turns. After fixing the logic,
+    // players with negative turn values remain in the queue indefinitely as expected.
     public void TestTakingTurnsQueue_ForeverNegative()
     {
         var timTurns = -3;
@@ -135,7 +148,6 @@ public class TakingTurnsQueueTests
             Assert.AreEqual(expectedResult[i].Name, person.Name);
         }
 
-        // Verify that the people with infinite turns really do have infinite turns.
         var infinitePerson = players.GetNextPerson();
         Assert.AreEqual(timTurns, infinitePerson.Turns, "People with infinite turns should not have their turns parameter modified to a very big number. A very big number is not infinite.");
     }
@@ -143,7 +155,10 @@ public class TakingTurnsQueueTests
     [TestMethod]
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
-    // Defect(s) Found: 
+    // Defect(s) Found: The queue must throw an InvalidOperationException when an
+    // attempt is made to retrieve a person from an empty queue. After verifying
+    // the implementation, the correct exception and message ("No one in the queue.")
+    // are thrown.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
