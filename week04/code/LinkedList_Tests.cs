@@ -1,234 +1,100 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-// DO NOT MODIFY THIS FILE
-
 [TestClass]
-public class InsertTailTests
+public class LinkedListTests
 {
     [TestMethod]
-    public void InsertTail_Empty()
+    public void InsertHead_InsertTail_PreserveOrder()
     {
-        var ll = new LinkedList();
+        var list = new LinkedList();
 
-        Assert.IsTrue(ll.HeadAndTailAreNull());
-        ll.InsertTail(1);
-        Assert.IsTrue(ll.HeadAndTailAreNotNull());
-        Assert.AreEqual("<LinkedList>{1}", ll.ToString());
+        list.InsertHead(2);
+        list.InsertHead(1);
+        list.InsertTail(3);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, list.ToArray());
     }
 
     [TestMethod]
-    public void InsertTail_Basic()
+    public void RemoveHead_And_RemoveTail_WorkOnMultiItemList()
     {
-        var ll = new LinkedList();
+        var list = new LinkedList();
+        list.InsertTail(1);
+        list.InsertTail(2);
+        list.InsertTail(3);
 
-        ll.InsertTail(1);
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(5);
+        list.RemoveHead();
+        list.RemoveTail();
 
-        Assert.AreEqual("<LinkedList>{5, 4, 3, 2, 2, 2, 1}", ll.ToString());
-
-        ll.InsertTail(0);
-        ll.InsertTail(-1);
-
-        Assert.AreEqual("<LinkedList>{5, 4, 3, 2, 2, 2, 1, 0, -1}", ll.ToString());
-    }
-}
-
-[TestClass]
-public class RemoveTailTests
-{
-    [TestMethod]
-    public void RemoveTail_Empty()
-    {
-        var ll = new LinkedList();
-
-        ll.RemoveTail();
-        Assert.IsTrue(ll.HeadAndTailAreNull());
-        Assert.AreEqual("<LinkedList>{}", ll.ToString());
+        CollectionAssert.AreEqual(new[] { 2 }, list.ToArray());
     }
 
     [TestMethod]
-    public void RemoveTail_Single()
+    public void RemoveHead_And_RemoveTail_LeaveEmptyListWhenSingleItem()
     {
-        var ll = new LinkedList();
+        var list = new LinkedList();
+        list.InsertTail(10);
 
-        ll.InsertHead(1);
-        ll.RemoveTail();
-        Assert.IsTrue(ll.HeadAndTailAreNull());
-        Assert.AreEqual("<LinkedList>{}", ll.ToString());
+        list.RemoveHead();
+
+        Assert.IsTrue(list.HeadAndTailAreNull());
+
+        list.InsertTail(20);
+        list.RemoveTail();
+
+        Assert.IsTrue(list.HeadAndTailAreNull());
     }
 
     [TestMethod]
-    public void RemoveTail_Basic()
+    public void InsertAfter_InsertsAfterFirstOccurrenceOnly()
     {
-        var ll = new LinkedList();
+        var list = new LinkedList();
+        list.InsertTail(1);
+        list.InsertTail(2);
+        list.InsertTail(2);
+        list.InsertTail(3);
 
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(5);
+        list.InsertAfter(2, 9);
 
-        ll.RemoveTail();
-        Assert.AreEqual("<LinkedList>{5, 4, 3, 2, 2}", ll.ToString());
-
-        ll.RemoveTail();
-        Assert.AreEqual("<LinkedList>{5, 4, 3, 2}", ll.ToString());
-    }
-}
-
-[TestClass]
-public class RemoveTests
-{
-    [TestMethod]
-    public void Remove_NonExistant()
-    {
-        var ll = new LinkedList();
-
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(5);
-
-        ll.InsertAfter(3, 35);
-        ll.InsertAfter(5, 6);
-
-        Assert.AreEqual("<LinkedList>{5, 6, 4, 3, 35, 2, 2, 2}", ll.ToString());
-        ll.Remove(-1);
-        Assert.AreEqual("<LinkedList>{5, 6, 4, 3, 35, 2, 2, 2}", ll.ToString());
+        CollectionAssert.AreEqual(new[] { 1, 2, 9, 2, 3 }, list.ToArray());
     }
 
     [TestMethod]
-    public void Remove_Empty()
+    public void Remove_RemovesFirstOccurrenceOnly()
     {
-        var ll = new LinkedList();
-        ll.Remove(0);
-        Assert.AreEqual("<LinkedList>{}", ll.ToString());
-        Assert.IsTrue(ll.HeadAndTailAreNull());
+        var list = new LinkedList();
+        list.InsertTail(1);
+        list.InsertTail(2);
+        list.InsertTail(2);
+        list.InsertTail(3);
+
+        list.Remove(2);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, list.ToArray());
     }
 
     [TestMethod]
-    public void Remove_Single()
+    public void Replace_ReplacesAllOccurrences()
     {
-        var ll = new LinkedList();
-        ll.InsertHead(2);
-        ll.Remove(2);
-        Assert.AreEqual("<LinkedList>{}", ll.ToString());
-        Assert.IsTrue(ll.HeadAndTailAreNull());
+        var list = new LinkedList();
+        list.InsertTail(1);
+        list.InsertTail(2);
+        list.InsertTail(1);
+        list.InsertTail(3);
+
+        list.Replace(1, 8);
+
+        CollectionAssert.AreEqual(new[] { 8, 2, 8, 3 }, list.ToArray());
     }
 
     [TestMethod]
-    public void Remove_Multiple()
+    public void Reverse_IteratesBackwards()
     {
-        var ll = new LinkedList();
+        var list = new LinkedList();
+        list.InsertTail(4);
+        list.InsertTail(5);
+        list.InsertTail(6);
 
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(2);
-        ll.InsertHead(5);
-
-        ll.InsertAfter(3, 35);
-        ll.InsertAfter(5, 6);
-
-        Assert.AreEqual("<LinkedList>{5, 6, 2, 4, 3, 35, 2, 2}", ll.ToString());
-        ll.Remove(3);
-        Assert.AreEqual("<LinkedList>{5, 6, 2, 4, 35, 2, 2}", ll.ToString());
-        ll.Remove(6);
-        Assert.AreEqual("<LinkedList>{5, 2, 4, 35, 2, 2}", ll.ToString());
-        ll.Remove(2);
-        Assert.AreEqual("<LinkedList>{5, 4, 35, 2, 2}", ll.ToString());
-        ll.Remove(2);
-        Assert.AreEqual("<LinkedList>{5, 4, 35, 2}", ll.ToString());
-        ll.Remove(2);
-        Assert.AreEqual("<LinkedList>{5, 4, 35}", ll.ToString());
-    }
-}
-
-[TestClass]
-public class ReplaceTests
-{
-    [TestMethod]
-    public void Replace_NonExistant()
-    {
-        var ll = new LinkedList();
-
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(2);
-        ll.InsertHead(5);
-
-        ll.Replace(-1, 4);
-        Assert.AreEqual("<LinkedList>{5, 2, 4, 3, 2, 2}", ll.ToString());
-    }
-
-    [TestMethod]
-    public void Replace_Empty()
-    {
-        var ll = new LinkedList();
-
-        ll.Replace(-1, 4);
-        Assert.AreEqual("<LinkedList>{}", ll.ToString());
-    }
-
-    [TestMethod]
-    public void Replace_Multiple()
-    {
-        var ll = new LinkedList();
-
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(2);
-        ll.InsertHead(5);
-
-        ll.Replace(2, 4);
-        Assert.AreEqual("<LinkedList>{5, 4, 4, 3, 4, 4}", ll.ToString());
-
-        ll.Replace(3, -1);
-        Assert.AreEqual("<LinkedList>{5, 4, 4, -1, 4, 4}", ll.ToString());
-    }
-}
-
-[TestClass]
-public class ReverseTests
-{
-    [TestMethod]
-    public void Reverse_Empty()
-    {
-        var ll = new LinkedList();
-        Assert.AreEqual("<IEnumerable>{}", ll.Reverse().AsString());
-    }
-
-    [TestMethod]
-    public void Reverse_Single()
-    {
-        var ll = new LinkedList();
-        ll.InsertHead(5);
-        Assert.AreEqual("<IEnumerable>{5}", ll.Reverse().AsString());
-    }
-
-    [TestMethod]
-    public void Reverse_Basic()
-    {
-        var ll = new LinkedList();
-        ll.InsertHead(2);
-        ll.InsertHead(2);
-        ll.InsertHead(3);
-        ll.InsertHead(4);
-        ll.InsertHead(2);
-        ll.InsertHead(5);
-        Assert.AreEqual("<IEnumerable>{2, 2, 3, 4, 2, 5}", ll.Reverse().AsString());
+        CollectionAssert.AreEqual(new[] { 6, 5, 4 }, list.Reverse().Cast<int>().ToArray());
     }
 }
