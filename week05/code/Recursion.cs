@@ -81,7 +81,8 @@ public static class Recursion
         if (currPath == null)
             currPath = new List<(int, int)>();
 
-        if (!maze.IsValidMove(x, y, currPath))
+        // Fixed: pass the arguments in the correct order
+        if (!maze.IsValidMove(currPath, x, y))
             return;
 
         currPath.Add((x, y));
