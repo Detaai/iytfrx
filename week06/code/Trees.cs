@@ -1,23 +1,34 @@
-private static void InsertMiddle(int[] sortedNumbers, int first, int last, BinarySearchTree bst)
+public static class Trees
 {
-    // Base case:
-    // If the starting index goes past the ending index,
-    // there are no elements left to process
-    if (first > last)
-        return;
+    /// <summary>
+    /// Problem 5: Create a balanced BST from a sorted list
+    /// </summary>
+    public static BinarySearchTree CreateTreeFromSortedList(int[] sortedNumbers)
+    {
+        var bst = new BinarySearchTree();
+        InsertMiddle(sortedNumbers, 0, sortedNumbers.Length - 1, bst);
+        return bst;
+    }
 
-    // Find the middle index of the current range
-    int mid = (first + last) / 2;
+    /// <summary>
+    /// Problem 5 helper: recursively insert middle values to keep the tree balanced
+    /// </summary>
+    private static void InsertMiddle(int[] sortedNumbers, int first, int last, BinarySearchTree bst)
+    {
+        // Base case: nothing to insert
+        if (first > last)
+            return;
 
-    // Insert the middle value into the BST
-    // This helps keep the tree balanced
-    bst.Insert(sortedNumbers[mid]);
+        // Middle index
+        int mid = (first + last) / 2;
 
-    // Recursively process the LEFT half of the array
-    // (everything before the middle)
-    InsertMiddle(sortedNumbers, first, mid - 1, bst);
+        // Insert the middle value
+        bst.Insert(sortedNumbers[mid]);
 
-    // Recursively process the RIGHT half of the array
-    // (everything after the middle)
-    InsertMiddle(sortedNumbers, mid + 1, last, bst);
+        // Recurse on left half
+        InsertMiddle(sortedNumbers, first, mid - 1, bst);
+
+        // Recurse on right half
+        InsertMiddle(sortedNumbers, mid + 1, last, bst);
+    }
 }
