@@ -1,70 +1,23 @@
-public class Node
+private static void InsertMiddle(int[] sortedNumbers, int first, int last, BinarySearchTree bst)
 {
-    public int Data { get; set; }
-    public Node? Right { get; private set; }
-    public Node? Left { get; private set; }
+    // Base case:
+    // If the starting index goes past the ending index,
+    // there are no elements left to process
+    if (first > last)
+        return;
 
-    public Node(int data)
-    {
-        this.Data = data;
-    }
+    // Find the middle index of the current range
+    int mid = (first + last) / 2;
 
-    // Problem 1: Insert (no duplicates)
-    public void Insert(int value)
-    {
-        if (value == Data)
-        {
-            return; // Ignore duplicates
-        }
-        else if (value < Data)
-        {
-            if (Left is null)
-                Left = new Node(value);
-            else
-                Left.Insert(value);
-        }
-        else
-        {
-            if (Right is null)
-                Right = new Node(value);
-            else
-                Right.Insert(value);
-        }
-    }
+    // Insert the middle value into the BST
+    // This helps keep the tree balanced
+    bst.Insert(sortedNumbers[mid]);
 
-    // Problem 2: Contains
-    public bool Contains(int value)
-    {
-        if (value == Data)
-        {
-            return true;
-        }
-        else if (value < Data)
-        {
-            if (Left is null)
-                return false;
-            return Left.Contains(value);
-        }
-        else
-        {
-            if (Right is null)
-                return false;
-            return Right.Contains(value);
-        }
-    }
+    // Recursively process the LEFT half of the array
+    // (everything before the middle)
+    InsertMiddle(sortedNumbers, first, mid - 1, bst);
 
-    // Problem 4: GetHeight
-    public int GetHeight()
-    {
-        int leftHeight = 0;
-        int rightHeight = 0;
-
-        if (Left != null)
-            leftHeight = Left.GetHeight();
-
-        if (Right != null)
-            rightHeight = Right.GetHeight();
-
-        return 1 + Math.Max(leftHeight, rightHeight);
-    }
+    // Recursively process the RIGHT half of the array
+    // (everything after the middle)
+    InsertMiddle(sortedNumbers, mid + 1, last, bst);
 }
