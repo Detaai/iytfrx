@@ -9,12 +9,16 @@ public class Node
         this.Data = data;
     }
 
-    // Problem 1: Insert (no duplicates)
+    /// <summary>
+    /// Problem 1: Insert a value into the tree.
+    /// Only unique values are added (no duplicates allowed)
+    /// </summary>
     public void Insert(int value)
     {
         if (value == Data)
         {
-            return; // Ignore duplicates
+            // Ignore duplicates
+            return;
         }
         else if (value < Data)
         {
@@ -32,39 +36,26 @@ public class Node
         }
     }
 
-    // Problem 2: Contains
+    /// <summary>
+    /// Problem 2: Check if a value exists in the tree
+    /// </summary>
     public bool Contains(int value)
     {
         if (value == Data)
-        {
             return true;
-        }
         else if (value < Data)
-        {
-            if (Left is null)
-                return false;
-            return Left.Contains(value);
-        }
+            return Left != null && Left.Contains(value);
         else
-        {
-            if (Right is null)
-                return false;
-            return Right.Contains(value);
-        }
+            return Right != null && Right.Contains(value);
     }
 
-    // Problem 4: GetHeight
+    /// <summary>
+    /// Problem 4: Get the height of this node/subtree
+    /// </summary>
     public int GetHeight()
     {
-        int leftHeight = 0;
-        int rightHeight = 0;
-
-        if (Left != null)
-            leftHeight = Left.GetHeight();
-
-        if (Right != null)
-            rightHeight = Right.GetHeight();
-
+        int leftHeight = Left?.GetHeight() ?? 0;
+        int rightHeight = Right?.GetHeight() ?? 0;
         return 1 + Math.Max(leftHeight, rightHeight);
     }
 }
